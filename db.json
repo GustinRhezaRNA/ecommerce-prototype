@@ -1,0 +1,57 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@mail.com",
+      "password": "123456",
+      "role": "admin"
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "name": "Budi Santoso",
+      "phone": "08123456789",
+      "balance": 150000,
+      "createdAt": "2026-02-18T10:00:00Z"
+    }
+  ],
+  "providers": [
+    {
+      "id": 1,
+      "name": "Telkomsel"
+    },
+    {
+      "id": 2,
+      "name": "XL"
+    }
+  ],
+  "packages": [
+    {
+      "id": 1,
+      "providerId": 1,
+      "name": "Internet 10GB",
+      "quota": "10GB",
+      "validityDays": 30,
+      "price": 50000
+    },
+    {
+      "id": 2,
+      "providerId": 2,
+      "name": "Internet 15GB",
+      "quota": "15GB",
+      "validityDays": 30,
+      "price": 45000
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "packageId": 1,
+      "price": 50000,
+      "status": "SUCCESS",
+      "createdAt": "2026-02-18T12:00:00Z"
+    }
+  ]
+}
