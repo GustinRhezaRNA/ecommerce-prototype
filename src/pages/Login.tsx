@@ -37,6 +37,8 @@ export default function Login() {
             message.success("Login successful!");
             localStorage.setItem("user", JSON.stringify(user));
             navigate("/dashboard");
+
+        // eslint-disable-next-line 
         } catch (error) {
             message.error("Something went wrong");
         } finally {
