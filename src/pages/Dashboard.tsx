@@ -1,6 +1,5 @@
-import { Card, Col, Row, Typography, Table } from "antd";
+import { Card, Col, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
-import AppLayout from "../componets/AppLayout";
 import { api } from "../api/axiosInstance";
 import type { Customer, Transaction } from "../types";
 
@@ -28,7 +27,7 @@ export default function Dashboard() {
     );
 
     return (
-        <AppLayout>
+        <>
             <Title level={3}>Dashboard Overview</Title>
 
             {/* STATS CARDS */}
@@ -58,41 +57,7 @@ export default function Dashboard() {
             </Row>
 
             {/* RECENT TRANSACTIONS */}
-            <Title level={4} style={{ marginTop: 30 }}>
-                Recent Transactions
-            </Title>
-
-            <Table
-                dataSource={transactions}
-                rowKey="id"
-                pagination={{ pageSize: 5 }}
-                columns={[
-                    {
-                        title: "Transaction ID",
-                        dataIndex: "id",
-                    },
-                    {
-                        title: "Customer ID",
-                        dataIndex: "customerId",
-                    },
-                    {
-                        title: "Price",
-                        dataIndex: "price",
-                        render: (value: number) =>
-                            `Rp ${value.toLocaleString("id-ID")}`,
-                    },
-                    {
-                        title: "Status",
-                        dataIndex: "status",
-                    },
-                    {
-                        title: "Date",
-                        dataIndex: "createdAt",
-                        render: (value: string) =>
-                            new Date(value).toLocaleString("id-ID"),
-                    },
-                ]}
-            />
-        </AppLayout>
+            {/* Table removed as per requirements */}
+        </>
     );
 }
