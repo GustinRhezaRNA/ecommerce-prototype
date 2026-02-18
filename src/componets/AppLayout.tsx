@@ -52,6 +52,11 @@ export default function AppLayout({ children }: Props) {
               label: "Customers",
             },
             {
+              key: "/products",
+              icon: <ShoppingCartOutlined />,
+              label: "Products",
+            },
+            {
               key: "/transactions",
               icon: <ShoppingCartOutlined />,
               label: "Transactions",

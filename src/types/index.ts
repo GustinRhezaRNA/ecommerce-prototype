@@ -14,3 +14,12 @@ export interface Transaction {
   status: string;
   createdAt: string;
 }
+
+export interface Package {
+  id: number;
+  providerId: number;
+  name: string;
+  quota: string;
+  validityDays: number;
+  price: number;
+}
