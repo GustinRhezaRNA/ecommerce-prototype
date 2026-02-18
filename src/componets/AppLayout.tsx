@@ -1,42 +1,57 @@
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Dropdown, Avatar, Space, Typography } from "antd";
 import {
   DashboardOutlined,
   UserOutlined,
   ShoppingCartOutlined,
   LogoutOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
-import { useNavigate, useLocation } from "react-router-dom";
-import React from "react";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const { Header, Sider, Content } = Layout;
+const { Text } = Typography;
 
-interface Props {
-  children: React.ReactNode;
-}
-
-export default function AppLayout({ children }: Props) {
+export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [user, setUser] = useState<{ email: string; password: string } | null>(
+    null
+  );
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (!userStr) {
+      navigate("/");
+    } else {
+      setUser(JSON.parse(userStr));
+    }
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
 
+  const menuItems = [
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: handleLogout,
+    },
+  ];
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider theme="light">
-        <div style={{ padding: 20, fontWeight: 600 }}>
-          Admin Panel
-        </div>
+        <div style={{ padding: 20, fontWeight: 600 }}>Admin Panel</div>
 
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
           onClick={({ key }) => {
-            if (key === "logout") {
-              handleLogout();
-            } else {
+            if (key !== "logout") {
               navigate(key);
             }
           }}
@@ -61,22 +76,33 @@ export default function AppLayout({ children }: Props) {
               icon: <ShoppingCartOutlined />,
               label: "Transactions",
             },
-            {
-              key: "logout",
-              icon: <LogoutOutlined />,
-              label: "Logout",
-            },
           ]}
         />
       </Sider>
 
       <Layout>
-        <Header style={{ background: "#fff", paddingLeft: 20 }}>
-          Welcome, Admin
+        <Header
+          style={{
+            background: "#fff",
+            padding: "0 20px",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          {user && (
+            <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+              <Space style={{ cursor: "pointer" }}>
+                <Avatar icon={<UserOutlined />} />
+                <Text strong>{user.email}</Text>
+                <DownOutlined />
+              </Space>
+            </Dropdown>
+          )}
         </Header>
 
         <Content style={{ margin: 20 }}>
-          {children}
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
