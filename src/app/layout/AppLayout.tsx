@@ -5,6 +5,7 @@ import {
   ShoppingCartOutlined,
   LogoutOutlined,
   DownOutlined,
+  CreditCardOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -73,7 +74,7 @@ export default function AppLayout() {
             },
             {
               key: "/transactions",
-              icon: <ShoppingCartOutlined />,
+              icon: <CreditCardOutlined />,
               label: "Transactions",
             },
           ]}

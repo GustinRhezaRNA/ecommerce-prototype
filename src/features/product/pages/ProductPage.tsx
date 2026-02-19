@@ -1,11 +1,11 @@
-import Table from "../componets/Table";
+import Table from "@/shared/Table";
 import { message } from "antd";
 import { useEffect, useState } from "react";
-import { api } from "../api/axiosInstance";
-import type { Package } from "../types";
+import { api } from "@/api/api";
+import type { Product } from "../types";
 
-const Products = () => {
-    const [products, setProducts] = useState<Package[]>([]);
+export const ProductsPage = () => {
+    const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -97,7 +97,7 @@ const Products = () => {
                             value={search}
                             onChange={(e) => {
                                 setSearch(e.target.value);
-                                setPage(1); 
+                                setPage(1);
                             }}
                             style={{
                                 padding: "6px 12px",
@@ -135,4 +135,4 @@ const Products = () => {
     );
 };
 
-export default Products;
+
