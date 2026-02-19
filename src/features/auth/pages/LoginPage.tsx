@@ -1,7 +1,7 @@
 import { Form, Input, Button, Card, Typography, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { api } from "../api/axiosInstance";
+import { api } from "@/api/api";
 
 const { Title, Text } = Typography;
 
@@ -10,7 +10,7 @@ interface LoginForm {
     password: string;
 }
 
-export default function Login() {
+export const LoginPage = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -38,7 +38,7 @@ export default function Login() {
             localStorage.setItem("user", JSON.stringify(user));
             navigate("/dashboard");
 
-        // eslint-disable-next-line 
+            // eslint-disable-next-line 
         } catch (error) {
             message.error("Something went wrong");
         } finally {

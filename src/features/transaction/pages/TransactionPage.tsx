@@ -1,11 +1,11 @@
-import Table from "../componets/Table";
-import { message } from "antd";
+import Table from "@/shared/Table";
+import { message, Tag } from "antd";
 import { useEffect, useState } from "react";
-import { api } from "../api/axiosInstance";
-import type { Customer } from "../types";
+import { api } from "@/api/api";
+import type { Transaction } from "../types";
 
-const Customers = () => {
-    const [customers, setCustomers] = useState<Customer[]>([]);
+export const TransactionPage = () => {
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -29,31 +29,32 @@ const Customers = () => {
                 _per_page: pageSize,
             };
 
+            // Search by ID or other fields if supported. For now assuming ID or maybe no search support yet
+            // but keeping the structure ready. JSON-server support 'id' usually.
             if (debouncedSearch) {
-                params.name_like = debouncedSearch;
+                params.id = debouncedSearch;
             }
 
-            const response = await api.get<any>("/customers", { params });
+            const response = await api.get<any>("/transactions", { params });
 
             if (Array.isArray(response.data)) {
-                setCustomers(response.data);
+                setTransactions(response.data);
                 const totalCount = response.headers["x-total-count"];
                 if (totalCount) {
                     setTotal(parseInt(totalCount, 10));
                 }
             } else if (response.data && Array.isArray(response.data.data)) {
-                // json-server v1 structure support
-                setCustomers(response.data.data);
+                setTransactions(response.data.data);
                 if (response.data.items) {
                     setTotal(response.data.items);
                 }
             } else {
-                setCustomers([]);
+                setTransactions([]);
             }
 
         } catch (error) {
-            console.error("Failed to fetch customers:", error);
-            message.error("Failed to fetch customers");
+            console.error("Failed to fetch transactions:", error);
+            message.error("Failed to fetch transactions");
         } finally {
             setLoading(false);
         }
@@ -76,19 +77,29 @@ const Customers = () => {
         <Table
             rowKey="id"
             columns={[
-                { title: "Name", dataIndex: "name", key: "name" },
-                { title: "Phone", dataIndex: "phone", key: "phone" },
+                { title: "Transaction ID", dataIndex: "id", key: "id" },
+                { title: "Customer ID", dataIndex: "customerId", key: "customerId" },
                 {
-                    title: "Balance",
-                    dataIndex: "balance",
-                    key: "balance",
+                    title: "Price",
+                    dataIndex: "price",
+                    key: "price",
                     render: (val: number) => `Rp ${val.toLocaleString("id-ID")}`
                 },
                 {
-                    title: "Joined At",
+                    title: "Status",
+                    dataIndex: "status",
+                    key: "status",
+                    render: (status: string) => (
+                        <Tag color={status === "SUCCESS" ? "green" : "red"}>
+                            {status}
+                        </Tag>
+                    )
+                },
+                {
+                    title: "Date",
                     dataIndex: "createdAt",
                     key: "createdAt",
-                    render: (val: string) => new Date(val).toLocaleDateString("id-ID")
+                    render: (val: string) => new Date(val).toLocaleString("id-ID")
                 },
             ]}
             batchActionMenus={[
@@ -98,10 +109,10 @@ const Customers = () => {
             filterComponents={[
                 {
                     name: "search",
-                    label: "Search",
+                    label: "Search ID",
                     render: () => (
                         <input
-                            placeholder="Search customer..."
+                            placeholder="Search ID..."
                             value={search}
                             onChange={(e) => {
                                 setSearch(e.target.value);
@@ -123,18 +134,13 @@ const Customers = () => {
                     onClick: (record) => console.log("View", record),
                 },
                 {
-                    title: "Edit",
-                    type: "edit",
-                    onClick: (record) => console.log("Edit", record),
-                },
-                {
                     title: "Delete",
                     type: "delete",
                     onClick: (record) => console.log("Delete", record),
                 },
             ]}
             source={{
-                data: customers,
+                data: transactions,
                 meta: { page, pageSize, total },
             }}
             loading={loading}
@@ -143,4 +149,3 @@ const Customers = () => {
     );
 };
 
-export default Customers;

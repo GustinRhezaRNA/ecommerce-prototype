@@ -1,11 +1,12 @@
 import { Card, Col, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { api } from "../api/axiosInstance";
-import type { Customer, Transaction } from "../types";
+import { api } from "@/api/api";
+import type { Customer} from "@/features/customer/types";
+import type { Transaction } from "@/features/transaction/types";
 
 const { Title } = Typography;
 
-export default function Dashboard() {
+export const DashboardPage = () => {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -56,8 +57,6 @@ export default function Dashboard() {
                 </Col>
             </Row>
 
-            {/* RECENT TRANSACTIONS */}
-            {/* Table removed as per requirements */}
         </>
     );
 }
