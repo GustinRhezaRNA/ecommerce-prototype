@@ -1,9 +1,9 @@
-import { Form, Input, Button, Card, Typography, message } from "antd";
+import { Form, Input, Button,  Typography, message, Row, Col, Grid } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { api } from "@/api/api";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 interface LoginForm {
     email: string;
@@ -13,6 +13,7 @@ interface LoginForm {
 export const LoginPage = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const screens = Grid.useBreakpoint();
 
     const onFinish = async (values: LoginForm) => {
         try {
@@ -48,25 +49,19 @@ export const LoginPage = () => {
 
 
     return (
-        <div style={styles.container}>
-            {/* LEFT SIDE */}
-            <div style={styles.left}>
-                <Title style={{ color: "white" }}>
-                    Internet Package Admin
-                </Title>
-                <Text style={{ color: "white" }}>
-                    Manage customers and transactions efficiently.
-                </Text>
-            </div>
-
-            {/* RIGHT SIDE */}
-            <div style={styles.right}>
-                <Card style={styles.card}>
-                    <Title level={3} style={{ textAlign: "center" }}>
-                        Login
+        <Row style={styles.container}>
+            <Col xs={24} md={14} style={{ ...styles.left, height: screens.md ? "100%" : "50vh" }}>
+            </Col>
+            <Col xs={24} md={10} style={{ ...styles.right, height: screens.md ? "100%" : "50vh", marginTop: screens.md ? "1rem" : "0" }}>
+                <div style={{ width: "100%", maxWidth: "420px" }}>
+                    <Title level={3} style={{ textAlign: "center", marginBottom: "" }}>
+                        Welcome Back, Admin!    
+                    </Title>
+                    <Title level={5} style={{ textAlign: "center", marginBottom: "1rem", fontWeight: "normal", color: "#545c62ff" }}>
+                        Please enter your email and password to login
                     </Title>
 
-                    <Form layout="vertical" onFinish={onFinish}>
+                    <Form layout="vertical" onFinish={onFinish} size="large">
                         <Form.Item
                             label="Email"
                             name="email"
@@ -92,20 +87,21 @@ export const LoginPage = () => {
                             Login
                         </Button>
                     </Form>
-                </Card>
-            </div>
-        </div>
+                </div>
+            </Col>
+        </Row>
     );
 }
 
 const styles: Record<string, React.CSSProperties> = {
     container: {
-        display: "flex",
         height: "100vh",
+        margin: 0,
+        overflow: "hidden", // Prevent scrollbars
     },
     left: {
-        flex: 1,
-        background: "linear-gradient(135deg, #1677ff, #69b1ff)",
+        background: "url('/login.webp') no-repeat center center",
+        backgroundSize: "cover",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -113,15 +109,11 @@ const styles: Record<string, React.CSSProperties> = {
         padding: "40px",
     },
     right: {
-        flex: 1,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "#f5f7fa",
-    },
-    card: {
-        width: 350,
-        boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-        borderRadius: 12,
+        height: "100%",
+        background: "#ffffff",
+        padding: "40px",
     },
 };

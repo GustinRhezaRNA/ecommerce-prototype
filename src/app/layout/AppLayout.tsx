@@ -4,7 +4,6 @@ import {
   UserOutlined,
   ShoppingCartOutlined,
   LogoutOutlined,
-  DownOutlined,
   CreditCardOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
@@ -16,18 +15,18 @@ const { Text } = Typography;
 export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState<{ email: string; password: string } | null>(
-    null
+  const [user] = useState<{ email: string; password: string } | null>(
+    () => {
+      const userStr = localStorage.getItem("user");
+      return userStr ? JSON.parse(userStr) : null;
+    }
   );
 
   useEffect(() => {
-    const userStr = localStorage.getItem("user");
-    if (!userStr) {
+    if (!user) {
       navigate("/");
-    } else {
-      setUser(JSON.parse(userStr));
     }
-  }, [navigate]);
+  }, [navigate, user]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -46,7 +45,7 @@ export default function AppLayout() {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider theme="light">
-        <div style={{ padding: 20, fontWeight: 600 }}>Admin Panel</div>
+        <div style={{ padding: "20px 40px", fontWeight: 600, fontSize: "1rem" }}>Admin Panel</div>
 
         <Menu
           mode="inline"
@@ -85,18 +84,21 @@ export default function AppLayout() {
         <Header
           style={{
             background: "#fff",
-            padding: "0 20px",
+            padding: "0 40px",
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
           }}
         >
+
           {user && (
             <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
               <Space style={{ cursor: "pointer" }}>
                 <Avatar icon={<UserOutlined />} />
-                <Text strong>{user.email}</Text>
-                <DownOutlined />
+                <Text strong>
+                  {user.email.split('@')[0][0].toUpperCase() + user.email.split('@')[0].slice(1)}
+                </Text>
+
               </Space>
             </Dropdown>
           )}

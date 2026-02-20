@@ -1,15 +1,17 @@
 import Table from "@/shared/Table";
-import { message } from "antd";
+import { message, Button, Typography } from "antd";
+import type { TablePaginationConfig } from "antd";
 import { useEffect, useState } from "react";
 import { api } from "@/api/api";
 import type { Product } from "../types";
+import { useNavigate } from "react-router-dom";
 
 export const ProductsPage = () => {
-    const [products, setProducts] = useState<Product[]>([]);
+    const navigate = useNavigate();
+    const [allProducts, setAllProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const [total, setTotal] = useState(0);
     const [search, setSearch] = useState("");
 
     const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -17,6 +19,7 @@ export const ProductsPage = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(search);
+            setPage(1);
         }, 500);
         return () => clearTimeout(timer);
     }, [search]);
@@ -24,34 +27,14 @@ export const ProductsPage = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const params: any = {
-                _page: page,
-                _per_page: pageSize,
-            };
-
-            if (debouncedSearch) {
-                params.name_like = debouncedSearch;
-            }
-
-            const response = await api.get<any>("/packages", { params });
-            console.log("API Response:", response);
+            const response = await api.get<{ data: Product[] } | Product[]>("/packages?_per_page=1000");
 
             if (Array.isArray(response.data)) {
-                setProducts(response.data);
-                // Try legacy header total if array
-                const totalCount = response.headers["x-total-count"];
-                if (totalCount) {
-                    setTotal(parseInt(totalCount, 10));
-                }
+                setAllProducts(response.data);
             } else if (response.data && Array.isArray(response.data.data)) {
-                // json-server v1 structure
-                setProducts(response.data.data);
-                if (response.data.items) {
-                    setTotal(response.data.items);
-                }
+                setAllProducts(response.data.data);
             } else {
-                console.error("Invalid data format received:", response.data);
-                setProducts([]);
+                setAllProducts([]);
             }
         } catch (error) {
             console.error("Failed to fetch products:", error);
@@ -63,75 +46,89 @@ export const ProductsPage = () => {
 
     useEffect(() => {
         fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, pageSize, debouncedSearch]);
+    }, []);
+
+    const filteredProducts = allProducts.filter(product =>
+        product.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+
+    const paginatedProducts = filteredProducts.slice((page - 1) * pageSize, page * pageSize);
+    const total = filteredProducts.length;
 
     const handleUpdate = () => message.success("Update clicked");
     const handleDelete = () => message.success("Delete clicked");
 
-    const handleTableChange = (pagination: any) => {
-        setPage(pagination.current);
-        setPageSize(pagination.pageSize);
+    const handleTableChange = (pagination: TablePaginationConfig) => {
+        setPage(pagination.current ?? 1);
+        setPageSize(pagination.pageSize ?? 10);
     };
 
     return (
-        <Table
-            rowKey="id"
-            columns={[
-                { title: "Name", dataIndex: "name", key: "name" },
-                { title: "Price", dataIndex: "price", key: "price", render: (v) => `Rp ${v.toLocaleString()}` },
-                { title: "Quota", dataIndex: "quota", key: "quota" },
-                { title: "Validity (Days)", dataIndex: "validityDays", key: "validityDays" },
-            ]}
-            batchActionMenus={[
-                { key: "update", label: "Update", onClick: handleUpdate },
-                { key: "delete", label: "Delete", onClick: handleDelete },
-            ]}
-            filterComponents={[
-                {
-                    name: "search",
-                    label: "Search",
-                    render: () => (
-                        <input
-                            placeholder="Search product..."
-                            value={search}
-                            onChange={(e) => {
-                                setSearch(e.target.value);
-                                setPage(1);
-                            }}
-                            style={{
-                                padding: "6px 12px",
-                                borderRadius: 6,
-                                border: "1px solid #d9d9d9",
-                            }}
-                        />
-                    ),
-                },
-            ]}
-            actions={[
-                {
-                    title: "View",
-                    type: "view",
-                    onClick: (record) => console.log("View", record),
-                },
-                {
-                    title: "Edit",
-                    type: "edit",
-                    onClick: (record) => console.log("Edit", record),
-                },
-                {
-                    title: "Delete",
-                    type: "delete",
-                    onClick: (record) => console.log("Delete", record),
-                },
-            ]}
-            source={{
-                data: products,
-                meta: { page, pageSize, total },
-            }}
-            loading={loading}
-            onChange={handleTableChange}
-        />
+        <div>
+            <Typography.Title level={5}>Products</Typography.Title>
+            <Table
+                rowKey="id"
+                columns={[
+                    { title: "Name", dataIndex: "name", key: "name" },
+                    { title: "Price", dataIndex: "price", key: "price", render: (v) => `Rp ${(v as number).toLocaleString()}` },
+                    { title: "Quota", dataIndex: "quota", key: "quota" },
+                    { title: "Validity (Days)", dataIndex: "validityDays", key: "validityDays" },
+                ]}
+                batchActionMenus={[
+                    { key: "update", label: "Update", onClick: handleUpdate },
+                    { key: "delete", label: "Delete", onClick: handleDelete },
+                ]}
+                filterComponents={[
+                    {
+                        name: "search",
+                        label: "Search",
+                        render: () => (
+                            <div style={{ display: "flex", gap: 16 }}>
+                                <input
+                                    placeholder="Search product..."
+                                    value={search}
+                                    onChange={(e) => {
+                                        setSearch(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    style={{
+                                        padding: "6px 12px",
+                                        borderRadius: 6,
+                                        border: "1px solid #d9d9d9",
+                                    }}
+                                />
+                                <Button type="primary" onClick={() => navigate("/products/create")}>
+                                    Add Product
+                                </Button>
+                            </div>
+                        ),
+                    },
+                ]}
+                actions={[
+                    {
+                        title: "View",
+                        type: "view",
+                        onClick: (record) => navigate(`/products/${record.id}`),
+                    },
+                    {
+                        title: "Edit",
+                        type: "edit",
+                        onClick: (record) => navigate(`/products/${record.id}/edit`),
+                    },
+                    {
+                        title: "Delete",
+                        type: "delete",
+                        onClick: () => message.success(`Product deleted successfully`),
+                    },
+                ]}
+                source={{
+                    data: paginatedProducts,
+                    meta: { page, pageSize, total },
+                }}
+                loading={loading}
+                onChange={handleTableChange}
+            />
+        </div>
     );
 };
 

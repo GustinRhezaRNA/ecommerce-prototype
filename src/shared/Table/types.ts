@@ -1,4 +1,5 @@
 import React from 'react';
+import type { TablePaginationConfig } from 'antd';
 
 export interface BatchActionMenu {
   key: string;
@@ -12,7 +13,7 @@ export interface FilterComponent {
   label: string;
   name: string;
   render?: () => React.ReactNode;
-  filters?: any[];
+  filters?: unknown[];
   options?: { label: string; value: string }[];
   placeholder?: string;
   span?: number;
@@ -31,11 +32,12 @@ export interface TableSource<T> {
 
 export interface TableProps<T> {
   rowKey: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: { title: string; dataIndex: string; key: string; render?: (value: any) => React.ReactNode }[];
   batchActionMenus?: BatchActionMenu[];
   filterComponents?: FilterComponent[];
   source: TableSource<T>;
-  onChange?: (params: any) => void;
+  onChange?: (pagination: TablePaginationConfig) => void;
   actions?: {
     title: string;
     type?: 'view' | 'edit' | 'delete';

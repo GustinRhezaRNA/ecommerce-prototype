@@ -2,15 +2,17 @@ import {
   Table as AntTable,
   Button,
   Space,
-  Card,
-  Row,
-  Col,
   Popconfirm,
 } from "antd";
+import {
+  EyeOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import type { TableProps } from "./types";
 import { useState } from "react";
 
-const Table = <T extends any>({
+const Table = <T extends object>({
   rowKey,
   columns,
   actions,
@@ -36,7 +38,7 @@ const Table = <T extends any>({
       {
         title: "Action",
         key: "action",
-        render: (_: any, record: T) => (
+        render: (_: unknown, record: T) => (
           <Space>
             {actions.map((action) => {
               if (action.type === "delete") {
@@ -44,11 +46,10 @@ const Table = <T extends any>({
                   <Popconfirm
                     key={action.title}
                     title="Are you sure?"
-                    onConfirm={() => action.onClick?.(record)}
+                    onConfirm={() => { action.onClick?.(record); }}
+                    okButtonProps={{ loading: false }}
                   >
-                    <Button danger size="small">
-                      {action.title}
-                    </Button>
+                    <Button danger type="text" icon={<DeleteOutlined />} size="small" />
                   </Popconfirm>
                 );
               }
@@ -57,18 +58,25 @@ const Table = <T extends any>({
                 <Button
                   key={action.title}
                   size="small"
-                  type={
-                    action.type === "edit"
-                      ? "primary"
-                      : action.type === "view"
-                        ? "default"
-                        : undefined
+                  icon={
+                    action.type === "edit" ? (
+                      <EditOutlined />
+                    ) : action.type === "view" ? (
+                      <EyeOutlined />
+                    ) : undefined
                   }
+                  type="text"
+                  style={{
+                    color:
+                      action.type === "edit"
+                        ? "blue"
+                        : action.type === "view"
+                          ? "green"
+                          : undefined,
+                  }}
                   onClick={() => action.onClick?.(record)}
                   href={action.href}
-                >
-                  {action.title}
-                </Button>
+                />
               );
             })}
           </Space>
@@ -78,10 +86,10 @@ const Table = <T extends any>({
     : [];
 
   return (
-    <Card variant="outlined" style={{ borderRadius: 12 }}>
+    <div>
       {/* Header */}
-      <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
-        <Col>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <div>
           {batchActionMenus && selectedRowKeys.length > 0 && (
             <Space>
               {batchActionMenus.map((action) => (
@@ -95,9 +103,9 @@ const Table = <T extends any>({
               ))}
             </Space>
           )}
-        </Col>
+        </div>
 
-        <Col>
+        <div>
           <Space>
             {filterComponents &&
               filterComponents.map((filter) => (
@@ -106,15 +114,15 @@ const Table = <T extends any>({
                 </div>
               ))}
           </Space>
-        </Col>
-      </Row>
+        </div>
+      </div>
 
       <AntTable
         rowKey={rowKey}
         columns={[...columns, ...actionColumn]}
         dataSource={source.data}
         rowSelection={rowSelection}
-        bordered
+        bordered={false}
         pagination={{
           current: source.meta.page,
           pageSize: source.meta.pageSize,
@@ -124,7 +132,7 @@ const Table = <T extends any>({
         onChange={onChange}
         loading={loading}
       />
-    </Card>
+    </div>
   );
 };
 
