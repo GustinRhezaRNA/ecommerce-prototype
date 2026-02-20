@@ -1,73 +1,126 @@
-# React + TypeScript + Vite
+# E-Commerce Prototype
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Prototype aplikasi e-commerce sederhana yang dibangun dengan React, Vite, dan Ant Design. Mencakup fitur manajemen produk, pelanggan, transaksi, dan dashboard analitik.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🕐 Waktu Pengerjaan
 
-## React Compiler
+| Keterangan | Waktu |
+|---|---|
+| 📅 Mulai | 18 Februari 2026, 23:14 |
+| ✅ Selesai | 20 Februari 2026, 22:46 |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend:** React 19 + TypeScript + Vite
+- **UI Library:** Ant Design
+- **Routing:** React Router DOM
+- **Chart:** Recharts
+- **Mock API:** JSON Server
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Cara Menjalankan
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prasyarat
+
+Pastikan sudah terinstall:
+- [Node.js](https://nodejs.org/) (versi 18 ke atas)
+- npm (sudah termasuk bersama Node.js)
+
+### Langkah-langkah
+
+**1. Clone / Extract project**
+
+```bash
+# Jika menggunakan git
+git clone <url-repository>
+cd ecommerce-prototype
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**2. Install dependensi**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+**3. Jalankan Mock API Server** (terminal pertama)
+
+```bash
+npm run server
+```
+
+> Server API akan berjalan di: `http://localhost:3001`
+
+**4. Jalankan aplikasi frontend** (terminal kedua, buka terminal baru)
+
+```bash
+npm run dev
+```
+
+> Aplikasi akan berjalan di: `http://localhost:5173`
+
+**5. Buka di browser**
+
+Akses `http://localhost:5173` — aplikasi siap digunakan.
+
+---
+
+## 🔑 Akun Login
+
+| Username | Password |
+|---|---|
+| `admin@mail.com` | `123456` |
+
+---
+
+## 📁 Fitur Aplikasi
+
+### 🏠 Dashboard
+- **Stats Cards** — menampilkan ringkasan Total Customers, Total Transactions, dan Total Revenue secara real-time
+- **Chart Customers Aktif** — visualisasi data pelanggan aktif menggunakan Recharts (bar/line chart)
+- Data di-fetch dari API saat halaman pertama kali dimuat
+
+### 📦 Produk
+- **Tabel data produk** dengan kolom: Nama, Harga (format Rupiah), Kuota, Masa Berlaku
+- **Search / pencarian** — filter produk berdasarkan nama secara real-time
+- **Debounce 500ms** — pencarian tidak langsung hit API, tetapi menunggu jeda ketik untuk efisiensi
+- **Pagination** — navigasi data per halaman (default 10 data/halaman), bisa diubah
+- **CRUD lengkap** — tambah, lihat detail, edit, dan hapus produk
+- **Batch Action** — pilih beberapa baris sekaligus lalu lakukan aksi Update / Delete
+- **Form validasi** — field wajib diisi dengan pesan error yang jelas
+
+### 👥 Pelanggan
+- **Tabel data pelanggan** dengan kolom: Nama, Nomor Telepon, Saldo (format Rupiah)
+- **Search** — filter pelanggan secara real-time
+- **Debounce 500ms** pada input pencarian
+- **Pagination** — navigasi halaman dengan ukuran halaman yang dapat disesuaikan
+- **CRUD lengkap** — tambah, lihat detail, edit, dan hapus pelanggan
+- **Form validasi** — semua field wajib diisi (nama, telepon, saldo)
+- **Batch Action** — aksi massal pada baris yang dipilih
+
+### 💳 Transaksi
+- **Tabel riwayat transaksi** dengan kolom: ID Transaksi, Customer ID, Harga, Status, Tanggal
+- **Status Badge berwarna** — `success` (hijau), `pending` (kuning), `failed` (merah) menggunakan Ant Design `Tag`
+- **Search** — filter berdasarkan Transaction ID atau Customer ID
+- **Debounce 500ms** pada input pencarian
+- **Pagination** — navigasi halaman
+- **Lihat detail transaksi** per baris
+
+### 🔐 Autentikasi
+- **Halaman Login** dengan validasi form
+- **Protected Routes** — halaman dashboard, produk, pelanggan, dan transaksi hanya bisa diakses setelah login
+- Session disimpan di `localStorage`
+
+### 🧩 Shared Components
+- **Reusable `Table` component** — komponen tabel generik yang digunakan di semua halaman, mendukung: search filter, pagination, batch action, row actions (view/edit/delete), dan loading state
+- **Sidebar navigasi** — navigasi antar halaman dengan highlight menu aktif
+---
+
+## 📝 Catatan
+
+- Kedua terminal (`npm run server` dan `npm run dev`) harus berjalan bersamaan agar aplikasi berfungsi dengan baik.
+- Data disimpan di file `db.json` sebagai mock database.
