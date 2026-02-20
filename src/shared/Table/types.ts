@@ -45,4 +45,5 @@ export interface TableProps<T> {
     onClick?: (record: T) => void;
   }[];
   loading?: boolean;
+  title?: string;
 }

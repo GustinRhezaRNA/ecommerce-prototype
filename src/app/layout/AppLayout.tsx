@@ -1,20 +1,17 @@
-import { Layout, Menu, Dropdown, Avatar, Space, Typography } from "antd";
+import { Layout, Dropdown, Avatar, Space, Typography } from "antd";
 import {
-  DashboardOutlined,
   UserOutlined,
-  ShoppingCartOutlined,
   LogoutOutlined,
-  CreditCardOutlined,
 } from "@ant-design/icons";
-import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { AppSidebar } from "@/shared/AppSidebar";
 
-const { Header, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 const { Text } = Typography;
 
 export default function AppLayout() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [user] = useState<{ email: string; password: string } | null>(
     () => {
       const userStr = localStorage.getItem("user");
@@ -44,41 +41,7 @@ export default function AppLayout() {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sider theme="light">
-        <div style={{ padding: "20px 40px", fontWeight: 600, fontSize: "1rem" }}>Admin Panel</div>
-
-        <Menu
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          onClick={({ key }) => {
-            if (key !== "logout") {
-              navigate(key);
-            }
-          }}
-          items={[
-            {
-              key: "/dashboard",
-              icon: <DashboardOutlined />,
-              label: "Dashboard",
-            },
-            {
-              key: "/customers",
-              icon: <UserOutlined />,
-              label: "Customers",
-            },
-            {
-              key: "/products",
-              icon: <ShoppingCartOutlined />,
-              label: "Products",
-            },
-            {
-              key: "/transactions",
-              icon: <CreditCardOutlined />,
-              label: "Transactions",
-            },
-          ]}
-        />
-      </Sider>
+      <AppSidebar />
 
       <Layout>
         <Header

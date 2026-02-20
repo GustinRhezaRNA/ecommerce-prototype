@@ -21,6 +21,7 @@ const Table = <T extends object>({
   source,
   onChange,
   loading,
+  title,
 }: TableProps<T>) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -89,7 +90,12 @@ const Table = <T extends object>({
     <div>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {title && (
+            <span style={{ fontSize: 16, fontWeight: 600, color: "rgba(0,0,0,0.88)" }}>
+              {title}
+            </span>
+          )}
           {batchActionMenus && selectedRowKeys.length > 0 && (
             <Space>
               {batchActionMenus.map((action) => (

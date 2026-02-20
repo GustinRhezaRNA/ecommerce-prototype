@@ -1,5 +1,5 @@
 import Table from "@/shared/Table";
-import { message, Button, Typography } from "antd";
+import { message, Button } from "antd";
 import type { TablePaginationConfig } from "antd";
 import { useEffect, useState } from "react";
 import { api } from "@/api/api";
@@ -65,8 +65,8 @@ export const ProductsPage = () => {
 
     return (
         <div>
-            <Typography.Title level={5}>Products</Typography.Title>
             <Table
+                title="Products"
                 rowKey="id"
                 columns={[
                     { title: "Name", dataIndex: "name", key: "name" },
